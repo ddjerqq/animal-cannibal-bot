@@ -2,39 +2,44 @@
 
 using Discord.WebSocket;
 
-internal class Program 
+namespace animal_cannibal_bot
 {
-    private readonly DiscordSocketClient client; 
-    private string token = File.ReadAllText("../../../token.txt");
-
-    public Program()
+    internal class Program
     {
-        this.client = new DiscordSocketClient();
-        this.client.MessageReceived += MessageHandler;
-    }
+        private readonly DiscordSocketClient _client;
+        private readonly string _token = File.ReadAllText("../../../token.txt");
 
-    public async Task StartBotAsync()
-    {
-        await this.client.LoginAsync(Discord.TokenType.Bot, token);
-        await this.client.StartAsync();
-        await Task.Delay(-1);
-    }
+        private Program()
+        {
+            this._client = new DiscordSocketClient();
+            this._client.MessageReceived += MessageHandler;
+        }
 
-    private async Task MessageHandler(SocketMessage message)
-    {
-        if (message.Author.IsBot) return;
+        private async Task StartBotAsync()
+        {
+            await this._client.LoginAsync(Discord.TokenType.Bot, _token);
+            await this._client.StartAsync();
+            await Task.Delay(-1);
+        }
 
-        await ReplyAsync(message, "C# Response works!");
-    }
+        private static async Task MessageHandler(SocketMessage message)
+        {
+            // Temporarily static
+            if (message.Author.IsBot) return;
 
-    private async Task ReplyAsync(SocketMessage message, string response)
-    {
-        await message.Channel.SendMessageAsync(response);
-    }
+            await ReplyAsync(message, "C# Response works!");
+        }
 
-    static async Task Main(string[] args)
-    {
-        var myBot = new Program();
-        await myBot.StartBotAsync();
+        private static async Task ReplyAsync(SocketMessage message, string response)
+        {
+            // This is only temporarily static
+            await message.Channel.SendMessageAsync(response);
+        }
+
+        private static async Task Main(string[] args)
+        {
+            var myBot = new Program();
+            await myBot.StartBotAsync();
+        }
     }
 }
