@@ -1,0 +1,6 @@
+﻿<Solution>
+  <Configurations />
+  <Folder Name="/src/">
+    <Project Path="DiscordBotClient\DiscordBotClient.csproj" Type="Classic C#" />
+  </Folder>
+</Solution>
