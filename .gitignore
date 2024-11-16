@@ -8,4 +8,4 @@ riderModule.iml
 /_ReSharper.Caches/
 *.user
 node_modules
-.logs
+.log

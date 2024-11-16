@@ -1,0 +1,122 @@
+services:
+  seq:
+    image: datalust/seq:latest
+    container_name: bugi-seq
+    ports:
+      - "1080:80"
+      - "5342:5341"
+    shm_size: 128mb
+    environment:
+      - ACCEPT_EULA=Y
+      - SEQ_FIRSTRUN_ADMINUSERNAME=admin
+      - SEQ_FIRSTRUN_ADMINPASSWORDHASH=QOCS/WnN0W4W2uU47E0eWV7wlLlzrhBYV1aDaV9MlfBiF1Qy31VaJcBmG0ArZUiqIsX+ZAGg/7CzSZgPlwlhSSwT17IxVeq9XtIZAgmwN/9r
+    volumes:
+      - /home/ddjerqq/bugi/.logs/seq/:/data
+    restart: unless-stopped
+
+  wolframalpha:
+    image: bots.wolframalpha
+    build:
+      context: .
+      dockerfile: src/Bots.WolframAlpha/Dockerfile
+    container_name: wolframalpha
+    env_file:
+      - .env
+    shm_size: 128mb
+    environment:
+      - BOT__NAME=wolframalpha
+      - LOG__PATH=/var/log/wolframalpha
+      - CREDENTIAL_SERVER__URL=credentials
+    volumes:
+      - /home/ddjerqq/bugi/.logs/wolframalpha:/var/log/wolframalpha
+    restart: unless-stopped
+    depends_on:
+      - credentials
+
+  coursehero:
+    image: bots.coursehero
+    build:
+      context: .
+      dockerfile: src/Bots.CourseHero/Dockerfile
+    container_name: coursehero
+    env_file:
+      - .env
+    shm_size: 128mb
+    environment:
+      - BOT__NAME=coursehero
+      - LOG__PATH=/var/log/coursehero
+      - CREDENTIAL_SERVER__URL=credentials
+    volumes:
+      - /home/ddjerqq/bugi/.logs/coursehero:/var/log/coursehero
+    restart: unless-stopped
+    depends_on:
+      - credentials
+
+  quillbot:
+    image: bots.quillbot
+    build:
+      context: .
+      dockerfile: src/Bots.QuillBot/Dockerfile
+    container_name: quillbot
+    env_file:
+      - .env
+    shm_size: 128mb
+    environment:
+      - BOT__NAME=quillbot
+      - LOG__PATH=/var/log/quillbot
+      - CREDENTIAL_SERVER__URL=credentials
+    volumes:
+      - /home/ddjerqq/bugi/.logs/quillbot:/var/log/quillbot
+    restart: unless-stopped
+    depends_on:
+      - credentials
+
+  credentials:
+    image: credentials
+    build:
+      context: .
+      dockerfile: src/LoginService/Dockerfile
+    container_name: credentials
+    env_file:
+      - .env
+    shm_size: 128mb
+    environment:
+      - LOG__PATH=/var/log/credentials
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://0.0.0.0:5000
+    volumes:
+      - /home/ddjerqq/bugi/:/credentials
+    restart: unless-stopped
+
+
+  seleniumtest:
+    image: seleniumtest
+    build:
+      context: .
+      dockerfile: src/SeleniumTest/Dockerfile
+    container_name: test_selenium_login
+    env_file:
+      - .env
+    shm_size: 128mb
+
+  puppeteertest:
+    image: puppeteertest
+    build:
+      context: .
+      dockerfile: src/PuppeteerTest/Dockerfile
+    container_name: puppeteertest
+    env_file:
+      - .env
+    shm_size: 128mb
+
+  webapplication1:
+    image: webapplication1
+    build:
+      context: .
+      dockerfile: WebApplication1/Dockerfile
+
+  discordbotclient:
+    image: discordbotclient
+    build:
+      context: .
+      dockerfile: DiscordBotClient/Dockerfile
